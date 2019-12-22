@@ -1,4 +1,6 @@
 import express from 'express'
+import https from 'https'
+import fs from 'fs'
 import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 import cors from 'cors'
@@ -27,9 +29,15 @@ applyResponseHelpers(app)
 /** Initialize API Routes */
 app.use('/api', routes)
 
-/** Listen For App */
-app.listen(Settings.port, () => {
-  console.log('Server Connected')
-})
-
+/**
+ *  Server Over HTTPS  (Generate Self-Signed Certificates for your domain)
+ *
+*/
+https.createServer({
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+}, app)
+  .listen(Settings.port, () => {
+    console.log('Server Connected')
+  })
 
