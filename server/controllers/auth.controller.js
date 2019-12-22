@@ -60,8 +60,9 @@ export const sendLoginLink = (req, res) => {
         return res.jsonError(err)
 
       sendTemporaryLoginLink(email, { token }, (err) => {
-        if (err)
+        if (err) {
           return res.jsonError(err)
+        }
 
         res.jsonResponse('Email Sent Successfully')
       })

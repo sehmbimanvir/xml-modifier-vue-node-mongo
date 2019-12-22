@@ -31,7 +31,6 @@ app.use('/api', routes)
 
 /**
  *  Server Over HTTPS  (Generate Self-Signed Certificates for your domain)
- *
 */
 https.createServer({
   key: fs.readFileSync('server.key'),

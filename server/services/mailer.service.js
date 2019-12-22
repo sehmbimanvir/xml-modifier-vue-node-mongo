@@ -3,8 +3,7 @@ import Settings from '../config'
 import hbs from 'nodemailer-express-handlebars'
 
 const Transport = nodeMailer.createTransport({
-  host: Settings.mail.host,
-  port: Settings.mail.port,
+  service: 'gmail',
   auth: {
     user: Settings.mail.user,
     pass: Settings.mail.pass
