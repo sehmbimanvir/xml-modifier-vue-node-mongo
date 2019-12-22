@@ -1,5 +1,6 @@
 /node_modules
 /xml-files/*
+!xml-files/.gitkeep 
 /.idea
 /.vscode
 .env
