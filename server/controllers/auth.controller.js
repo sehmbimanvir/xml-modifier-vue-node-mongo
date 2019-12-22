@@ -3,11 +3,13 @@ import Settings from '../config'
 import { sendTemporaryLoginLink } from '../events/sendTemporaryLoginLink'
 import { generateRandomString, generteAuthPayload } from '../utils'
 import { OAuth2Client } from 'google-auth-library'
+import bcrypt from 'bcryptjs'
 
 export const register = (req, res) => {
+  const password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10))
   const User = new UserModal({
     email: req.body.email,
-    password: req.body.password
+    password
   })
 
   User.save(err => {
@@ -19,10 +21,7 @@ export const register = (req, res) => {
 }
 
 export const login = (req, res) => {
-  const credentials = req.body.token ? { token: req.body.token } : {
-    email: req.body.email,
-    password: req.body.password
-  }
+  const credentials = req.body.token ? { token: req.body.token } : { email: req.body.email }
 
   UserModal.findOne(credentials, (err, user) => {
     if (err)
@@ -36,6 +35,11 @@ export const login = (req, res) => {
       UserModal.findByIdAndUpdate(user._id, {
         token: null
       }, (err, response) => { })
+    } else {
+      /** Verify Password */
+      const isValid = bcrypt.compareSync(req.body.password, user.password)
+      if (!isValid)
+        return res.jsonResponse('Invalid Password', {}, 400)
     }
 
     const data = generteAuthPayload(user)
@@ -86,7 +90,6 @@ export const loginWithGoogle = (req, res) => {
         res.jsonResponse('Logged In Successfully', data)
       }
     )
-
   }).catch(() => {
     res.jsonResponse('Something Went Wrong')
   })
